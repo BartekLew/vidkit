@@ -1,0 +1,8 @@
+#!/bin/sh
+
+prefix=~/.local/bin/
+
+for program in src/*
+do
+    ln $program $prefix/
+done
