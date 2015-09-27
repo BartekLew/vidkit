@@ -10,6 +10,7 @@ if [[ "$movie" == "" ]]; then
     echo "
 USAGE: moverpintado movie_file [frames_each_second [first_frame [last_frame]]]
 "
+    exit 1
 fi
 if [[ "$density" == "" ]];then
     filter='fps=2'
