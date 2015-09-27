@@ -1,0 +1,28 @@
+#!/bin/sh
+
+video_codec=libx264
+audio_codec=libvorbis
+movie=$1
+density=$2
+start=$3
+stop=$4
+if [[ "$movie" == "" ]]; then
+    echo "
+USAGE: moverpintado movie_file [frames_each_second [first_frame [last_frame]]]
+"
+fi
+if [[ "$density" == "" ]];then
+    filter='fps=2'
+else
+    filter="fps=$density"
+fi
+if [[ "$start" != "" ]]; then
+    start_flag="-ss $start"
+fi
+if [[ "$stop" != "" ]]; then
+    duration=$((stop-start))
+    stop_flag="-t $duration"
+fi
+
+ffmpeg -i $movie -vf $filter $start_flag $stop_flag $(basename $movie)-%5d.png
+
