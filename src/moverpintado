@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 video_codec=libx264
 audio_codec=libvorbis
@@ -6,6 +6,7 @@ movie=$1
 density=$2
 start=$3
 stop=$4
+
 if [[ "$movie" == "" ]]; then
     echo "
 USAGE: moverpintado movie_file [frames_each_second [first_frame [last_frame]]]
@@ -13,10 +14,11 @@ USAGE: moverpintado movie_file [frames_each_second [first_frame [last_frame]]]
     exit 1
 fi
 if [[ "$density" == "" ]];then
-    filter='fps=2'
-else
-    filter="fps=$density"
+    density=2
 fi
+
+filter="fps=$density"
+
 if [[ "$start" != "" ]]; then
     start_flag="-ss $start"
 fi
