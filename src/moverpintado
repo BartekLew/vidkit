@@ -25,5 +25,15 @@ if [[ "$stop" != "" ]]; then
     stop_flag="-t $duration"
 fi
 
-ffmpeg -i $movie -vf $filter $start_flag $stop_flag $(basename $movie)-%5d.png
+movie_name=$(basename $movie)
+rm $movie_name-*.png
+ffmpeg -i $movie -vf $filter $start_flag $stop_flag $movie_name-%5d.png
 
+frames=$(echo $movie_name-*.png)
+total_frames=$(echo $frames | wc -w)
+current_frame=1
+for frame in $frames
+do
+    convert -pointsize 50 label:"$current_frame / $total_frames" -gravity Center $frame -append $frame
+    current_frame=$((current_frame+1))
+done
