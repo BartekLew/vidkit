@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 
 video_codec=libx264
 audio_codec=libvorbis
@@ -9,7 +9,7 @@ stop=$4
 
 if [[ "$movie" == "" ]]; then
     echo "
-USAGE: moverpintado movie_file [frames_each_second [first_frame [last_frame]]]
+USAGE: vidls movie_file [frames_each_second [first_frame [last_frame]]]
 "
     exit 1
 fi
