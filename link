@@ -4,5 +4,5 @@ prefix=~/.local/bin/
 
 for program in src/*
 do
-    ln $program $prefix/
+    cp $program $prefix/
 done

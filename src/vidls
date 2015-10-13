@@ -2,7 +2,10 @@
 
 video_codec=libx264
 audio_codec=libvorbis
-movie=$1
+ffmpeg_filters="scale=640:-1"
+pic_viewer=gpicview
+
+movie=$(readlink -e $1)
 density=$2
 start=$3
 stop=$4
@@ -18,6 +21,9 @@ if [[ "$density" == "" ]];then
 fi
 
 filter="fps=$density"
+if [[ "$ffmpeg_filters" != "" ]];then
+    filter="$ffmpeg_filters, $filter"
+fi
 
 if [[ "$start" != "" ]]; then
     start_flag="-ss $start"
@@ -28,14 +34,23 @@ if [[ "$stop" != "" ]]; then
 fi
 
 movie_name=$(basename $movie)
-rm $movie_name-*.png
-ffmpeg -i $movie -vf $filter $start_flag $stop_flag $movie_name-%5d.png
+rm $movie_name-*.png &> /dev/null
+
+workdir=/tmp/vidls/$RANDOM
+echo "frames generated to: $workdir"
+mkdir -p $workdir
+cd $workdir
+
+ffmpeg -loglevel -8 -i $movie -vf "$filter" $start_flag $stop_flag $FFMPEG_FLAGS $movie_name-%5d.png
 
 frames=$(echo $movie_name-*.png)
 total_frames=$(echo $frames | wc -w)
 current_frame=1
 for frame in $frames
 do
+    echo "$current_frame / $total_frames"
     convert -pointsize 50 label:"$current_frame / $total_frames" -gravity Center $frame -append $frame
     current_frame=$((current_frame+1))
-done
+done | wait_nfo "$total_frames"
+
+$pic_viewer .
