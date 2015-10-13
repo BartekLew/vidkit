@@ -1,3 +1,9 @@
-moverpintado
+vidkit
 ------------
 project aims developing sufficient, KISS tool for video editing.
+
+currently consists of 2 scripts:
+ * vidls — makes galery of screenshots for choosing proper place to cut.
+ * vidtake — workflow for getting right times to cut video.
+
+all needed details in code. Depends on wait_nfo tool from my workplace repo.
