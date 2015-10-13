@@ -38,7 +38,6 @@ if [[ "$stop" != "" ]]; then
 fi
 
 movie_name=$(basename $movie)
-rm $movie_name-*.png &> /dev/null | true
 
 workdir=/tmp/vidls/$RANDOM
 echo "frames generated to: $workdir"
