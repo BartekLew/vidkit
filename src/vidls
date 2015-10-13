@@ -1,4 +1,8 @@
-#!/bin/sh
+#!/bin/sh -e
+
+do_math() {
+    echo "scale=2;$@" | bc
+}
 
 video_codec=libx264
 audio_codec=libvorbis
@@ -29,12 +33,12 @@ if [[ "$start" != "" ]]; then
     start_flag="-ss $start"
 fi
 if [[ "$stop" != "" ]]; then
-    duration=$((stop-start))
+    duration=$(do_math $stop-$start)
     stop_flag="-t $duration"
 fi
 
 movie_name=$(basename $movie)
-rm $movie_name-*.png &> /dev/null
+rm $movie_name-*.png &> /dev/null | true
 
 workdir=/tmp/vidls/$RANDOM
 echo "frames generated to: $workdir"
@@ -50,7 +54,7 @@ for frame in $frames
 do
     echo "$current_frame / $total_frames"
     convert -pointsize 50 label:"$current_frame / $total_frames" -gravity Center $frame -append $frame
-    current_frame=$((current_frame+1))
+    current_frame=$(do_math $current_frame+1)
 done | wait_nfo "$total_frames"
 
 $pic_viewer .

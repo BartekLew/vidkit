@@ -1,0 +1,38 @@
+#!/bin/bash -e
+
+do_math() {
+    echo "scale=2;$@" | bc
+}
+
+if [[ $# != 1 ]]; then
+    cat $0
+    exit 1
+fi
+
+get_stop_time() {
+    return_var=$1
+    shift
+
+    approx=$( mplayer $@ 2> /dev/null \
+                | grep 'A:' \
+                | sed 's/.*A:\s*//' \
+                | sed 's/\s*V:.*//' \
+                | tail -n1 \
+    )
+    framing_start=$(do_math $approx-1)
+    framing_stop=$(do_math $approx+1)
+    vidls $1 10 "$framing_start" "$framing_stop"
+    
+    echo "Please hit a frame you want for cut: "
+    read frame_number
+
+    eval "$return_var=$(do_math $framing_start + $frame_number/10)"
+}
+
+movie=$1
+
+get_stop_time 'take_start' $movie
+get_stop_time 'take_stop' $movie -ss $take_start
+take_stop=$(do_math $take_stop-$take_start)
+mplayer $movie -ss "$take_start" -endpos "$take_stop"
+echo $take_start -- $take_stop
