@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 do_math() {
     echo "scale=2;$@" | bc
@@ -20,13 +20,10 @@ get_stop_time() {
                 | tail -n1 \
     )
     framing_start=$(do_math $approx-1)
-    framing_stop=$(do_math $approx+1)
-    vidls $1 10 "$framing_start" "$framing_stop"
+    vidls $1 4 "$framing_start" 2
     
-    echo "Please hit a frame you want for cut: "
-    read frame_number
-
-    eval "$return_var=$(do_math $framing_start + $frame_number/10)"
+    echo "Please enter a time when you want for cut: "
+    read $return_var
 }
 
 movie=$1

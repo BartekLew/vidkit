@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 
 do_math() {
     echo "scale=2;$@" | bc
@@ -6,54 +6,67 @@ do_math() {
 
 video_codec=libx264
 audio_codec=libvorbis
-ffmpeg_filters="scale=640:-1"
 pic_viewer=gpicview
 
 movie=$(readlink -e $1)
 density=$2
 start=$3
-stop=$4
+duration=$4
 
 if [[ "$movie" == "" ]]; then
     echo "
-USAGE: vidls movie_file [frames_each_second [first_frame [last_frame]]]
+USAGE: vidls movie_file [dump_each_n_frames [first_frame [duration_in_seconds]]]
 "
     exit 1
 fi
 if [[ "$density" == "" ]];then
-    density=2
+    density=10
 fi
 
-filter="fps=$density"
-if [[ "$ffmpeg_filters" != "" ]];then
-    filter="$ffmpeg_filters, $filter"
+filter="framestep=$density"
+if [[ "$mplayer_filters" != "" ]];then
+    filter="$mplayer_filters,$filter"
 fi
 
 if [[ "$start" != "" ]]; then
     start_flag="-ss $start"
 fi
-if [[ "$stop" != "" ]]; then
-    duration=$(do_math $stop-$start)
-    stop_flag="-t $duration"
+if [[ "$duration" != "" ]]; then
+    stop_flag="-endpos $duration"
 fi
 
 movie_name=$(basename $movie)
 
 workdir=/tmp/vidls/$RANDOM
-echo "frames generated to: $workdir"
+echo ">>> vidls: frames generated to: $workdir"
 mkdir -p $workdir
 cd $workdir
 
-ffmpeg -loglevel -8 -i $movie -vf "$filter" $start_flag $stop_flag $FFMPEG_FLAGS $movie_name-%5d.png
+tmpfile=/tmp/$RANDOM
+mplayer -quiet $movie -vf "$filter" $start_flag $stop_flag $MPLAYER_FLAGS -ao null -vo png &> $tmpfile
+if [[ $? != 0 ]];then
+    echo ">>> vidls: mplayer failed. :-( output:"
+    cat $tmpfile
+    exit 1
+fi
+rm $tmpfile
 
-frames=$(echo $movie_name-*.png)
+echo ">>> vidls: labeling frames..."
+frames=$(ls)
 total_frames=$(echo $frames | wc -w)
-current_frame=1
+tpf=$(do_math $duration/$total_frames)
+current_time="$start"
+current_frame="1"
 for frame in $frames
 do
     echo "$current_frame / $total_frames"
-    convert -pointsize 50 label:"$current_frame / $total_frames" -gravity Center $frame -append $frame
+    current_time=$(do_math $current_time+$tpf)
+    convert -pointsize 50 label:"$current_time ($current_frame / $total_frames)" -gravity Center $frame -append $frame
     current_frame=$(do_math $current_frame+1)
 done | wait_nfo "$total_frames"
 
 $pic_viewer .
+
+echo ">>>vidls: cleanup"
+cd
+rm -r $workdir
