@@ -1,8 +1,5 @@
-#!/bin/sh
+#!/bin/sh -x
 
-prefix=~/.local/bin/
+prefix=~/.local
 
-for program in src/*
-do
-    cp $program $prefix/
-done
+cp src/* $prefix/bin
