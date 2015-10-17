@@ -1,0 +1,19 @@
+#!/bin/sh
+
+called_as=$0
+
+usage() {
+    echo "USAGE: $called_as cut_file"
+    exit 1
+}
+
+[[ $# != 1 ]] && usage
+
+values=$1
+[[ "$(head -n1 $values)" == '#vidkit-take' ]] || usage
+source $values
+
+mplayer $source \
+    $([[ ! -z "$start" ]] && echo "-ss $start") \
+    $([[ ! -z "$duration" ]] && echo "-endpos $duration")\
+    $([[ ! -z "$filters" ]] && echo "-vf $filters")
