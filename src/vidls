@@ -16,7 +16,7 @@ duration=$4
 if [[ "$movie" == "" ]]; then
     echo "
 USAGE: vidls movie_file [dump_each_n_frames [first_frame [duration_in_seconds]]]
-"
+" 1>&2
     exit 1
 fi
 if [[ "$density" == "" ]];then

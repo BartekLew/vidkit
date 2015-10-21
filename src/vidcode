@@ -21,7 +21,7 @@ get_section() {
 }
 
 usage() {
-    echo "USAGE: $called_as cut_label"
+    echo "USAGE: $called_as cut_label" 1>&2
     exit 1
 }
 
