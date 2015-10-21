@@ -1,0 +1,38 @@
+#!/bin/sh
+
+get_section() {
+    offset=$1
+    for n in $(seq 1 $offset)
+    do
+        read line
+    done
+
+    while read line && [[ -z $line ]]
+    do
+        :
+    done
+
+    echo $line
+
+    while read line && [[ ! -z $line ]]
+    do
+        echo $line
+    done
+}
+
+usage() {
+    echo "USAGE: $called_as cut_label"
+    exit 1
+}
+
+
+[[ $# != 1 ]] && usage
+
+cut_label=$1
+line=$(grep -hPn ":$cut_label\s*$" .vidkit-cuts | head -n1 | cut -f1 -d:)
+if [[ -z "$line" ]]; then
+    echo "$called_as: cut '$cut_label' not found. :-(" 1>&2
+    exit 1
+fi
+
+cat .vidkit-cuts | get_section $((line+1))
