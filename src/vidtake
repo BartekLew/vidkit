@@ -32,4 +32,16 @@ get_stop_time 'take_start' $movie
 get_stop_time 'take_stop' $movie -ss $take_start
 take_stop=$(do_math $take_stop-$take_start)
 mplayer $movie -ss "$take_start" -endpos "$take_stop"
-echo $take_start -- $take_stop
+
+last_takeno=$( \
+    grep ":$movie" .vidkit-cuts \
+        | sed "s/:$movie-//" \
+        | sort | tail -n1
+)
+takeno=$((last_takeno+1))
+
+echo ":$movie-$takeno
+
+source=$movie
+start=$take_start
+duration=$take_stop" >> .vidkit-cuts
