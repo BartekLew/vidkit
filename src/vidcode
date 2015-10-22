@@ -29,7 +29,7 @@ usage() {
 [[ $# != 1 ]] && usage
 
 cut_label=$1
-line=$(grep -hPn ":$cut_label\s*$" .vidkit-cuts | head -n1 | cut -f1 -d:)
+line=$(grep -hPn ":$cut_label\s*$" .vidkit-cuts | tail -n1 | cut -f1 -d:)
 if [[ -z "$line" ]]; then
     echo "$called_as: cut '$cut_label' not found. :-(" 1>&2
     exit 1
