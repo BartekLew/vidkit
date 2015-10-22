@@ -27,8 +27,14 @@ get_stop_time() {
 }
 
 movie=$1
+eval $(vidcode $movie-.*)
+if [[ -z "$start" ]]; then
+    start_pos=0
+else
+    start_pos=$(do_math $start+$duration)
+fi
 
-get_stop_time 'take_start' $movie
+get_stop_time 'take_start' $movie -ss $start_pos
 get_stop_time 'take_stop' $movie -ss $take_start
 take_stop=$(do_math $take_stop-$take_start)
 mplayer $movie -ss "$take_start" -endpos "$take_stop"
