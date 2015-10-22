@@ -1,0 +1,27 @@
+#!/bin/sh -x
+
+called_as=$0
+
+usage() {
+    echo "USAGE: $called_as label_regex [label_regex] ..." 1>&2
+    exit 1
+}
+
+[[ $# == 0 ]] && usage
+
+command_line=$( \
+    for regex in $@
+    do
+        for label in $(grep -hP ":$regex" .vidkit-cuts | sed 's/^://')
+        do
+            eval $(vidcode $label)
+            
+            echo "$source"
+            [[ ! -z "$start" ]] && echo "-ss $start"
+            [[ ! -z "$duration" ]] && echo "-endpos $duration"
+            [[ ! -z "$filters" ]] && echo "-vf $filters"
+        done
+    done
+)
+
+mencoder $command_line -o vid.mp4 -oac mp3lame -ovc x264
