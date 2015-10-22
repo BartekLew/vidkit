@@ -43,7 +43,7 @@ mkdir -p $workdir
 cd $workdir
 
 tmpfile=/tmp/$RANDOM
-mplayer -quiet $movie -vf "$filter" $start_flag $stop_flag $MPLAYER_FLAGS -ao null -vo png &> $tmpfile
+mplayer -quiet $movie -vf "$filter" $start_flag $stop_flag $MPLAYER_FLAGS -ao null -vo jpeg &> $tmpfile
 if [[ $? != 0 ]];then
     echo ">>> vidls: mplayer failed. :-( output:"
     cat $tmpfile
