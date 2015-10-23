@@ -12,6 +12,13 @@ usage() {
 cut_label=$1
 eval $(vidcode $cut_label)
 
+if [[ ! -z "$vidfilters" ]]; then
+    filters=$( \
+        [[ ! -z "$filters" ]] && echo -n "$filters,"; \
+        echo "$vidfilters" \
+    )
+fi
+
 mplayer $source \
     $([[ ! -z "$start" ]] && echo "-ss $start") \
     $([[ ! -z "$duration" ]] && echo "-endpos $duration")\
