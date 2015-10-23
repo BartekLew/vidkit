@@ -2,8 +2,16 @@ vidkit
 ------------
 project aims developing sufficient, KISS tool for video editing.
 
-currently consists of 2 scripts:
- * vidls — makes galery of screenshots for choosing proper place to cut.
- * vidtake — workflow for getting right times to cut video.
+my current workflow is following:
+ * I copy my files from device to local file system.
+ * I choose all interesting parts with vidtake.
+ * I use vidcrop to set reasonable cropping for all of them.
+ * I edit .vidkit-cuts to make custom changes, mostly eq2 filter.
+ * I use vidshow to make preview of changes.
+ * I use vidvid to generate final video.
+
+You might be interested in other tools for exceptional situations:
+ * vidcode — returns all preferences for cut label stored.
+ * vidls — creates screenshots in movie to find the moment.
 
 all needed details in code. Depends on wait_nfo tool from my workplace repo.
