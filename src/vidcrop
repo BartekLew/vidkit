@@ -1,0 +1,47 @@
+#!/bin/sh
+
+for label in $(grep -hP "^:.*" .vidkit-cuts | sed 's/^://')
+do
+    eval $(vidcode $label)
+    size=$(exiftool $source | grep "Image Size" | cut -f2 -d:)
+    tw=$(echo $size | cut -f1 -dx)
+    cw=$tw
+    th=$(echo $size | cut -f2 -dx)
+    ch=$th
+    cx=0
+    cy=0
+    finished=""
+    while [[ -z "$finished" ]]
+    do
+        export vidfilters="crop=$cw:$ch:$cx:$cy"
+        vidshow $label
+
+        echo "cw=$cw <-- crop width  | crop left margin --> cx=$cx"
+        echo "ch=$ch <-- crop height | crop top margin --> cy=$cy"
+
+        echo -n "what now?> "
+        read action
+        if [[ $? == 1 ]]; then
+            finished="true"
+        else
+            eval "$action"
+            if [[ $((cw+cx)) -gt $tw ]]; then
+                cw=$((tw-cx))
+            fi
+            if [[ $((ch+cy)) -gt $th ]]; then
+                ch=$((th-cy))
+            fi
+        fi
+    done
+
+    echo ":$label"
+    echo
+    echo "source=$source"
+    echo "start=$start"
+    echo "duration=$duration"
+    echo "filters="$( \
+        [[ ! -z "$filters" ]] && echo -n "$filters,"; \
+        echo $vidfilters \
+    )
+    read
+done
