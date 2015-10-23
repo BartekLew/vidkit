@@ -50,4 +50,5 @@ echo ":$movie-$takeno
 
 source=$movie
 start=$take_start
-duration=$take_stop" >> .vidkit-cuts
+duration=$take_stop
+" >> .vidkit-cuts
