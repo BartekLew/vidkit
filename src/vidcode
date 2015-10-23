@@ -36,3 +36,4 @@ if [[ -z "$line" ]]; then
 fi
 
 cat .vidkit-cuts | get_section $((line+1))
+echo label_line=$line
