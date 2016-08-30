@@ -7,7 +7,7 @@ do_math() {
 }
 
 get_time() {
-    mplayer $@ 2> /dev/null \
+    mplayer $@ -sub vid.srt 2> /dev/null \
     	| grep 'A:' \
     	| sed 's/.*A:\s*//' \
     	| sed 's/\s*V:.*//' \
@@ -37,7 +37,7 @@ subno=$((last+1))
 start=$(get_time $@ -ss $seek_from)
 end=$(get_time $@ -ss $start)
 
-echo -e "$subno\n$(hid_time $start) --> $(hid_time $end)\n" >> vid.srt
+echo -e "$subno\n$(hid_time $start) --> $(hid_time $end)" >> vid.srt
 echo -n "...: "
 cat >> vid.srt
 echo >> vid.srt
