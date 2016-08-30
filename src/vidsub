@@ -1,0 +1,40 @@
+#!/bin/bash
+
+temp='.vidsub'
+
+do_math() {
+    echo $@ | bc
+}
+
+get_time() {
+    mplayer $@ 2> /dev/null \
+    	| grep 'A:' \
+    	| sed 's/.*A:\s*//' \
+    	| sed 's/\s*V:.*//' \
+    	| tail -n1 
+}
+
+hid_time() {
+    seconds_full=$1
+    frac=${seconds_full##*.}
+    all_seconds=${seconds_full%.*}
+    all_minutes=$(do_math $all_seconds/60)
+    seconds=$(do_math $all_seconds%60)
+    hours=$(do_math $all_minutes/60)
+    minutes=$(do_math $all_minutes%60)
+
+    printf '%02d:%02d:%02d,%03d' $hours $minutes $seconds $frac
+}
+
+last=0
+
+if [[ -f "$temp" ]]; then
+    last=$(cat $temp)
+fi
+
+start=$(get_time $@ -ss $last)
+end=$(get_time $@ -ss $start)
+
+echo "$(hid_time $start) --> $(hid_time $end)"
+echo $end > $temp
+
