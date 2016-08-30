@@ -23,7 +23,7 @@ hid_time() {
     hours=$(do_math $all_minutes/60)
     minutes=$(do_math $all_minutes%60)
 
-    printf '%02d:%02d:%02d,%03d' $hours $minutes $seconds $frac
+    printf '%02d:%02d:%02d,%d00' $hours $minutes $seconds $frac
 }
 
 last=0
