@@ -27,14 +27,18 @@ hid_time() {
 }
 
 last=0
+seek_from=0
 
 if [[ -f "$temp" ]]; then
-    last=$(cat $temp)
+    eval $(cat "$temp")
 fi
 
-start=$(get_time $@ -ss $last)
+subno=$((last+1))
+start=$(get_time $@ -ss $seek_from)
 end=$(get_time $@ -ss $start)
 
-echo "$(hid_time $start) --> $(hid_time $end)"
-echo $end > $temp
-
+echo -e "$subno\n$(hid_time $start) --> $(hid_time $end)\n" >> vid.srt
+echo -n "...: "
+cat >> vid.srt
+echo >> vid.srt
+echo -e "last=$subno\nseek_from=$end" > $temp
