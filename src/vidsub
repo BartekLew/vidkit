@@ -42,4 +42,6 @@ echo -e "$subno\n$(hid_time $start) --> $(hid_time $end)" >> vid.srt
 echo -n "...: "
 cat >> vid.srt
 echo >> vid.srt
+
+end=$(do_math $end-3)
 echo -e "last=$subno\nseek_from=$end" > $temp
