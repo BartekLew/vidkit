@@ -43,5 +43,5 @@ echo -n "...: "
 cat >> vid.srt
 echo >> vid.srt
 
-end=$(do_math $end-3)
+end=$(do_math $start-1)
 echo -e "last=$subno\nseek_from=$end" > $temp
