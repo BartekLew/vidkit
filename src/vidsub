@@ -1,5 +1,6 @@
 #!/bin/bash
 
+encoding=utf8
 temp='.vidsub'
 
 do_math() {
@@ -7,7 +8,7 @@ do_math() {
 }
 
 get_time() {
-    mplayer $@ -sub vid.srt 2> /dev/null \
+    mplayer $@ -sub vid.srt -subcp $encoding 2> /dev/null \
     	| grep 'A:' \
     	| sed 's/.*A:\s*//' \
     	| sed 's/\s*V:.*//' \

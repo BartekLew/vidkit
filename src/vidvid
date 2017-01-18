@@ -11,7 +11,11 @@ command_line=$( \
         [[ ! -z "$start" ]] && echo "-ss $start"
         [[ ! -z "$duration" ]] && echo "-endpos $duration"
         [[ ! -z "$filters" ]] && echo "-vf $filters"
+        [[ ! -z "$vfilters" ]] && echo "-vf $vfilters"
+        [[ ! -z "$afilters" ]] && echo "-vf $afilters"
+
+        [[ ! -z "$filters" ]] && echo "vidvid: WARNING filters parameter in vidkit-cuts is obsolete, for backward compatibility. Please change it to vfilters" 1>&2
     done 
 )
 
-mencoder $command_line -o vid.mp4 -oac mp3lame -ovc x264
+mencoder $command_line -o vid.mp4 -oac lavc -ovc lavc
