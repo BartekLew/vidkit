@@ -38,10 +38,24 @@ subno=$((last+1))
 start=$(get_time $@ -ss $seek_from)
 end=$(get_time $@ -ss $start)
 
-echo -e "$subno\n$(hid_time $start) --> $(hid_time $end)" >> vid.srt
+if [[ -n "$keymap" ]]; then
+    original_keymap=$(setxkbmap -query | grep layout | sed -s 's/layout:\s*//')
+    lang_map=$(echo $LANG | sed 's/_.*$//')
+
+    setxkbmap "$keymap,$lang_map"
+fi
+
 echo -n "...: "
-cat >> vid.srt
+read -r subtitle
+
+echo -e "$subno\n$(hid_time $start) --> $(hid_time $end)" >> vid.srt
+echo $subtitle >> vid.srt
 echo >> vid.srt
 
 end=$(do_math $start-1)
 echo -e "last=$subno\nseek_from=$end" > $temp
+
+if [[ -n "$keymap" ]]; then
+    setxkbmap $original_keymap
+    echo "keymap=$keymap" >> $temp
+fi
