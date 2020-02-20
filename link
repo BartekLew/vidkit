@@ -1,5 +1,8 @@
 #!/bin/sh -x
 
 prefix=~/.local
+mkdir $prefix/cl &> /dev/null
 
 cp src/* $prefix/bin
+cp cl/* $prefix/cl
+

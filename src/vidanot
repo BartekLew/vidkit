@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sbcl --script $(dirname $0)/../cl/anot.cl $@
